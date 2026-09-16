@@ -19,6 +19,8 @@ agents:
       source: harness/local-child.yaml
     - name: remote-base-child
       source: harness/remote-base-child.yaml
+    - name: remote-child
+      source: https://raw.githubusercontent.com/halfsend/test-repo-01-base-harness-host/main/harness/remote-child.yaml#sha256=41201b40616e7a36fff264c427b4bccd379de14ec449169b7ca9dbcfdd60ced1
 allowed_remote_resources:
     - https://raw.githubusercontent.com/fullsend-ai/fullsend/
     - https://raw.githubusercontent.com/fullsend-ai/agents/
