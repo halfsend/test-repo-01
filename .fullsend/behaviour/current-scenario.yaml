@@ -1,6 +1,1 @@
-ops:
-    - description: Prove inherited trigger
-      op: write_fixture
-      args: output/dispatch-inherit-ok.json, fixtures/dispatch/ok.json
-      content: |
-        {"status":"ok","source":"harness-dispatch-behaviour-test"}
+ops: []
