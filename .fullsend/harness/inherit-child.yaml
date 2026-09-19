@@ -1,0 +1,2 @@
+base: https://raw.githubusercontent.com/halfsend/test-repo-01-base-harness-host/main/harness/trigger-base.yaml#sha256=b105d9b580ed21439d8695216ed849158fe34f8fbacf812cd1b07400d3e3da03
+slug: fullsend-ai-inherit-child
