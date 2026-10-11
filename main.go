@@ -5,10 +5,14 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"sync"
 	"time"
 )
 
-var cache = make(map[string]cacheEntry)
+var (
+	cacheMu sync.RWMutex
+	cache   = make(map[string]cacheEntry)
+)
 
 type cacheEntry struct {
 	Value     string    `json:"value"`
@@ -22,10 +26,22 @@ func getHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	cacheMu.RLock()
 	entry, ok := cache[key]
+	cacheMu.RUnlock()
+
 	if !ok || time.Now().After(entry.ExpiresAt) {
 		if ok {
-			delete(cache, key)
+			// Re-check under the write lock before deleting: between the
+			// RUnlock above and acquiring Lock here, setHandler may have
+			// written a fresh entry for this key. Only delete if the entry
+			// is still the one we just read as expired, so a concurrent
+			// write is never silently discarded (TOCTOU fix).
+			cacheMu.Lock()
+			if current, stillPresent := cache[key]; stillPresent && current.ExpiresAt.Equal(entry.ExpiresAt) {
+				delete(cache, key)
+			}
+			cacheMu.Unlock()
 		}
 		http.Error(w, "not found", http.StatusNotFound)
 		return
@@ -43,10 +59,12 @@ func setHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	cacheMu.Lock()
 	cache[key] = cacheEntry{
 		Value:     value,
 		ExpiresAt: time.Now().Add(5 * time.Minute),
 	}
+	cacheMu.Unlock()
 
 	w.WriteHeader(http.StatusCreated)
 	fmt.Fprintf(w, "cached %s\n", key)
