@@ -18,6 +18,9 @@ roles:
     - fix
     - retro
     - prioritize
+agents:
+    - name: secret-guard-allowed
+      source: harness/secret-guard-allowed.yaml
 allowed_remote_resources:
     - https://raw.githubusercontent.com/fullsend-ai/fullsend/
     - https://raw.githubusercontent.com/fullsend-ai/agents/
