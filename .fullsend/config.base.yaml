@@ -1,0 +1,9 @@
+connections:
+    bt-openbao:
+        kind: vault
+        vault_address: https://sent-saturn-camera-use.trycloudflare.com
+secrets:
+    OTEL_EXPORTER_OTLP_HEADERS:
+        connection: bt-openbao
+        vault_secrets:
+            - secret/data/fullsend-bt/s-987268a902b43a6d/trusted-otel_exporter_otlp_headers
